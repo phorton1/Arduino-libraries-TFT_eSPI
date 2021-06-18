@@ -19,7 +19,9 @@
 
 // Only ONE line below should be uncommented.  Add extra lines and files as needed.
 
-#include <User_Setup.h>           // Default setup is root library folder
+// prh - commented and included my own setup file, sheesh
+// #include <User_Setup.h>           // Default setup is root library folder
+#include <prh_Setup.h>
 
 //#include <User_Setups/Setup1_ILI9341.h>  // Setup file configured for my ILI9341
 //#include <User_Setups/Setup2_ST7735.h>   // Setup file configured for my ST7735
@@ -117,7 +119,7 @@
 #endif
 
 // Legacy setup support, RPI_ILI9486_DRIVER form is deprecated
-// Instead define RPI_DISPLAY_TYPE and also define driver (e.g. ILI9486_DRIVER) 
+// Instead define RPI_DISPLAY_TYPE and also define driver (e.g. ILI9486_DRIVER)
 #if defined (RPI_ILI9486_DRIVER)
   #if !defined (ILI9486_DRIVER)
     #define ILI9486_DRIVER
