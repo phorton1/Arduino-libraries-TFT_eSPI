@@ -9,7 +9,7 @@
 // #define TFT_RST     4  // Reset pin (could connect to RST pin)
 #define TFT_RST     -1  // Set TFT_RST to -1 if display RESET is connected to ESP32 board RST
 
-#define TOUCH_CS   21     // Chip select pin (T_CS) of touch screen
+#define TOUCH_CS    5   // Chip select pin (T_CS) of touch screen
 
 
 #define LOAD_GLCD   // Font 1. Original Adafruit 8 pixel font needs ~1820 bytes in FLASH

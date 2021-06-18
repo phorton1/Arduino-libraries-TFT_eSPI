@@ -1,11 +1,7 @@
 //--------------------------------------
 // pins
 //---------------------------------------
-// ESP32 default SPI CS is 5 (and DC 27?)
-// The TFT_eSPI library default TFT_CS was (apparently) 15
-// The TFT_eSPI library default TFT_DC was (apparently) 2
-// TFT_eSPI library uses prh_Setup.h which defines CS as 17
-// and DC as 16
+// ESP32 pin  definitions are in libraries/TFT_eSPI/prh_setup.h
 //
 //      VCC         5V
 //      GND         GND
@@ -18,7 +14,7 @@
 //      SDO         19          MISO
 //
 //      T_CLK       18          CLK
-//      T_CS        21
+//      T_CS        5
 //      T_DIN       23          MOSI
 //      T_DO        19          MISO
 //
