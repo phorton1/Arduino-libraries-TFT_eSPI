@@ -75,7 +75,7 @@ void setup()
     Serial.println("esp32_Touch_test.ino started");
 
     tft.init();
-    tft.setRotation(0);
+    tft.setRotation(3);
 
     touch_calibrate();
 
