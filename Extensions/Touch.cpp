@@ -56,7 +56,7 @@ uint8_t TFT_eSPI::getTouchRaw(uint16_t *x, uint16_t *y){
   uint16_t tmp;
 
   begin_touch_read_write();
-  
+
   // Start YP sample request for x position, read 4 times and keep last sample
   spi.transfer(0xd0);                    // Start new YP conversion
   spi.transfer(0);                       // Read first 8 bits
@@ -93,7 +93,7 @@ uint8_t TFT_eSPI::getTouchRaw(uint16_t *x, uint16_t *y){
 
 /***************************************************************************************
 ** Function name:           getTouchRawZ
-** Description:             read raw pressure on touchpad and return Z value. 
+** Description:             read raw pressure on touchpad and return Z value.
 ***************************************************************************************/
 uint16_t TFT_eSPI::getTouchRawZ(void){
 
@@ -112,7 +112,7 @@ uint16_t TFT_eSPI::getTouchRawZ(void){
 
 /***************************************************************************************
 ** Function name:           validTouch
-** Description:             read validated position. Return false if not pressed. 
+** Description:             read validated position. Return false if not pressed.
 ***************************************************************************************/
 #define _RAWERR 20 // Deadband error allowed in successive position samples
 uint8_t TFT_eSPI::validTouch(uint16_t *x, uint16_t *y, uint16_t threshold){
@@ -131,7 +131,7 @@ uint8_t TFT_eSPI::validTouch(uint16_t *x, uint16_t *y, uint16_t threshold){
   //  Serial.print("Z = ");Serial.println(z1);
 
   if (z1 <= threshold) return false;
-    
+
   getTouchRaw(&x_tmp,&y_tmp);
 
   //  Serial.print("Sample 1 x,y = "); Serial.print(x_tmp);Serial.print(",");Serial.print(y_tmp);
@@ -142,27 +142,27 @@ uint8_t TFT_eSPI::validTouch(uint16_t *x, uint16_t *y, uint16_t threshold){
 
   delay(2); // Small delay to the next sample
   getTouchRaw(&x_tmp2,&y_tmp2);
-  
+
   //  Serial.print("Sample 2 x,y = "); Serial.print(x_tmp2);Serial.print(",");Serial.println(y_tmp2);
   //  Serial.print("Sample difference = ");Serial.print(abs(x_tmp - x_tmp2));Serial.print(",");Serial.println(abs(y_tmp - y_tmp2));
 
   if (abs(x_tmp - x_tmp2) > _RAWERR) return false;
   if (abs(y_tmp - y_tmp2) > _RAWERR) return false;
-  
+
   *x = x_tmp;
   *y = y_tmp;
-  
+
   return true;
 }
-  
+
 /***************************************************************************************
 ** Function name:           getTouch
-** Description:             read callibrated position. Return false if not pressed. 
+** Description:             read callibrated position. Return false if not pressed.
 ***************************************************************************************/
 #define Z_THRESHOLD 350 // Touch pressure threshold for validating touches
 uint8_t TFT_eSPI::getTouch(uint16_t *x, uint16_t *y, uint16_t threshold){
   uint16_t x_tmp, y_tmp;
-  
+
   if (threshold<20) threshold = 20;
   if (_pressTime > millis()) threshold=20;
 
@@ -174,7 +174,7 @@ uint8_t TFT_eSPI::getTouch(uint16_t *x, uint16_t *y, uint16_t threshold){
   }
 
   if (valid<1) { _pressTime = 0; return false; }
-  
+
   _pressTime = millis() + 50;
 
   convertRawXY(&x_tmp, &y_tmp);
@@ -190,7 +190,7 @@ uint8_t TFT_eSPI::getTouch(uint16_t *x, uint16_t *y, uint16_t threshold){
 
 /***************************************************************************************
 ** Function name:           convertRawXY
-** Description:             convert raw touch x,y values to screen coordinates 
+** Description:             convert raw touch x,y values to screen coordinates
 ***************************************************************************************/
 void TFT_eSPI::convertRawXY(uint16_t *x, uint16_t *y)
 {
@@ -217,9 +217,9 @@ void TFT_eSPI::convertRawXY(uint16_t *x, uint16_t *y)
 
 /***************************************************************************************
 ** Function name:           calibrateTouch
-** Description:             generates calibration parameters for touchscreen. 
+** Description:             generates calibration parameters for touchscreen.
 ***************************************************************************************/
-void TFT_eSPI::calibrateTouch(uint16_t *parameters, uint32_t color_fg, uint32_t color_bg, uint8_t size){
+bool TFT_eSPI::calibrateTouch(uint16_t *parameters, uint32_t color_fg, uint32_t color_bg, uint8_t size, uint32_t timeout){
   int16_t values[] = {0,0,0,0,0,0,0,0};
   uint16_t x_tmp, y_tmp;
 
@@ -232,7 +232,7 @@ void TFT_eSPI::calibrateTouch(uint16_t *parameters, uint32_t color_fg, uint32_t 
     fillRect(_width-size-1, _height-size-1, size+1, size+1, color_bg);
 
     if (i == 5) break; // used to clear the arrows
-    
+
     switch (i) {
       case 0: // up left
         drawLine(0, 0, 0, size, color_fg);
@@ -261,7 +261,14 @@ void TFT_eSPI::calibrateTouch(uint16_t *parameters, uint32_t color_fg, uint32_t 
 
     for(uint8_t j= 0; j<8; j++){
       // Use a lower detect threshold as corners tend to be less sensitive
-      while(!validTouch(&x_tmp, &y_tmp, Z_THRESHOLD/2));
+      uint32_t start_time = millis();
+      while(!validTouch(&x_tmp, &y_tmp, Z_THRESHOLD/2))
+      {
+        if (timeout && millis()-start_time > timeout)
+        {
+            return false;
+        }
+      }
       values[i*2  ] += x_tmp;
       values[i*2+1] += y_tmp;
       }
@@ -270,7 +277,7 @@ void TFT_eSPI::calibrateTouch(uint16_t *parameters, uint32_t color_fg, uint32_t 
   }
 
 
-  // from case 0 to case 1, the y value changed. 
+  // from case 0 to case 1, the y value changed.
   // If the measured delta of the touch x axis is bigger than the delta of the y axis, the touch and TFT axes are switched.
   touchCalibration_rotate = false;
   if(abs(values[0]-values[2]) > abs(values[1]-values[3])){
@@ -319,12 +326,13 @@ void TFT_eSPI::calibrateTouch(uint16_t *parameters, uint32_t color_fg, uint32_t 
     parameters[3] = touchCalibration_y1;
     parameters[4] = touchCalibration_rotate | (touchCalibration_invert_x <<1) | (touchCalibration_invert_y <<2);
   }
+  return true;
 }
 
 
 /***************************************************************************************
 ** Function name:           setTouch
-** Description:             imports calibration parameters for touchscreen. 
+** Description:             imports calibration parameters for touchscreen.
 ***************************************************************************************/
 void TFT_eSPI::setTouch(uint16_t *parameters){
   touchCalibration_x0 = parameters[0];
