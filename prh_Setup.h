@@ -1,5 +1,8 @@
 
 #define ILI9341_DRIVER
+// #define ILI9488_DRIVER
+
+
 
 #define TFT_MISO    19
 #define TFT_MOSI    23
