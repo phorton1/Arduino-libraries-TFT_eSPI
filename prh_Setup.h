@@ -2,17 +2,26 @@
 #define ILI9341_DRIVER
 // #define ILI9488_DRIVER
 
+#define CNC3018
 
 
 #define TFT_MISO    19
 #define TFT_MOSI    23
 #define TFT_SCLK    18
-#define TFT_CS      17  // was 15 // Chip select control pin
-#define TFT_DC      16  // was 2  // Data Command control pin
+
+#ifdef CNC3018
+    #define TFT_CS      22
+    #define TFT_DC      21
+    #define TOUCH_CS    5
+#else
+    #define TFT_CS      17  // was 15 // Chip select control pin
+    #define TFT_DC      16  // was 2  // Data Command control pin
+    #define TOUCH_CS    5   // Chip select pin (T_CS) of touch screen
+#endif
+
 // #define TFT_RST     4  // Reset pin (could connect to RST pin)
 #define TFT_RST     -1  // Set TFT_RST to -1 if display RESET is connected to ESP32 board RST
 
-#define TOUCH_CS    5   // Chip select pin (T_CS) of touch screen
 
 // prh - undef'd these after I created my own fonts
 #define LOAD_GLCD   // Font 1. Original Adafruit 8 pixel font needs ~1820 bytes in FLASH
