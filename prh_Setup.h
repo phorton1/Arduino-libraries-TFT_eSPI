@@ -1,6 +1,7 @@
 
 #define ILI9341_DRIVER
 // #define ILI9488_DRIVER
+// #define ILI9486_DRIVER
 
 #define CNC3018
 
