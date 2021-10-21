@@ -1,3 +1,50 @@
+## phorton1 Notes
+
+This is my fork of the **Bodmer/TFT_eSPI** library for use with
+my **FluidNC** related projects as of October, 2021.
+
+It is **virtually unchanged** from the original library.
+
+There is **one small modification** to allow a **timeout during TFT calibration**.
+
+Otherwise all of the functional 'C' code is **unchanged** from (though not necessarily *current* with the *tip* of)
+the original library repository.
+
+All other "changes" are *configuration settings* encapsulated in my
+**prhSettings.h**, which is included from **User_Setup_Select.h** as
+per Bodmer's intent.
+
+There are also some additional test programs in **examples/_prh_test**
+folder of this repository.  The programs are
+not part of the original library and may or may not
+be of any use to you.
+
+Please see the **git history** for details of all changes in this *fork*.
+
+**prh_Setup.h** contains the minimal settings as needed for my usage:
+
+- set the ESP32 pin assignments to those used by my project
+- started with an empty *theme* (no assumptions)
+- eliminated all fonts except the system default
+
+The fonts that I use are added by code in my
+[**FluidNC_UI**](https://github.com/phorton1/Arduino-libraries-FluidNC_UI)
+project.  Please see that repository for more information.
+
+**This library is installed** by merely **copying or cloning** it into your Arduino libraries folder.
+
+That's it.
+
+Have fun!
+
+**Thanks to Bodmer for this great re-usable library!**
+
+<br>
+
+## Original Readme Follows
+
+<br><br>
+
 A [Beta test branch](https://github.com/Bodmer/TFT_eSPI/tree/2.4.0-Beta) has been created, this has some new anti-aliased line functions (drawSpot, drawWideLine and drawWedgeLine), see the new Anti-aliased_Clock_v3 example. Comments in discussions tab (not issues at the moment please) are welcome.
 
 A new ["Discussions"](https://github.com/Bodmer/TFT_eSPI/discussions) facility has been added for Q&A etc. Use the ["Issues"](https://github.com/Bodmer/TFT_eSPI/issues) tab only for problems with the library. Thanks!
@@ -157,4 +204,3 @@ To select a new setup you then edit your own my_setup_select.h file (which will 
 The library was intended to support only TFT displays but using a Sprite as a 1 bit per pixel screen buffer permits support for the Waveshare 2 and 3 colour SPI ePaper displays. This addition to the library is experimental and only one example is provided. Further examples will be added.
 
 ![Example](https://i.imgur.com/L2tV129.jpg?1)
-
