@@ -53,7 +53,7 @@
     // can be loaded from the SPIFFS at runtime
 
 
-#define SPI_FREQUENCY           27000000
+#define SPI_FREQUENCY           20000000
 #define SPI_READ_FREQUENCY      20000000
 #define SPI_TOUCH_FREQUENCY     2500000
 
